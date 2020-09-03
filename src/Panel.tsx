@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   Animated,
   Dimensions,
   PanResponder,
+  Keyboard
 } from 'react-native';
 
 import { Bar } from './Bar';
@@ -127,7 +128,14 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
       this._animateTo(onlySmall ? STATUS.SMALL : openLarge ? STATUS.LARGE : onlyLarge ? STATUS.LARGE : STATUS.SMALL);
 
     Dimensions.addEventListener('change', this._onOrientationChange);
+
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._animateTo(STATUS.LARGE));
+
   };
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+  }
 
   _onOrientationChange = () => {
     const dimesions = Dimensions.get('screen');
@@ -191,7 +199,9 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
         this.setState({
           showComponent: false,
         });
-      } else this.setState({ canScroll: newStatus === STATUS.LARGE ? true : false });
+      } else {
+        this.setState({ canScroll: newStatus === STATUS.LARGE ? true : false });
+      }
     });
   };
 
@@ -205,7 +215,7 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
       closeIconStyle,
       onClose,
       allowTouchOutside,
-      closeOnTouchOutside,
+      closeOnTouchOutside
     } = this.props;
 
     return showComponent ? (
@@ -258,13 +268,9 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
             }}
             contentContainerStyle={SwipeablePanelStyles.scrollViewContentContainerStyle}
           >
-            {this.state.canScroll ? (
               <TouchableHighlight>
                 <React.Fragment>{this.props.children}</React.Fragment>
               </TouchableHighlight>
-            ) : (
-              this.props.children
-            )}
           </ScrollView>
         </Animated.View>
       </Animated.View>
