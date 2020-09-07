@@ -129,7 +129,7 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
 
     Dimensions.addEventListener('change', this._onOrientationChange);
 
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._animateTo(STATUS.LARGE));
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._animateTo(STATUS.LARGE, true));
 
   };
 
@@ -173,7 +173,7 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
     if (prevState.orientation !== this.state.orientation) this._animateTo(this.state.status);
   }
 
-  _animateTo = (newStatus = 0) => {
+  _animateTo = (newStatus = 0, hideComponent = false) => {
     let newY = 0;
 
     if (newStatus === STATUS.CLOSED) newY = PANEL_HEIGHT;
@@ -182,7 +182,7 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
     else if (newStatus === STATUS.LARGE) newY = 0;
 
     this.setState({
-      showComponent: true,
+      showComponent: !hideComponent,
       status: newStatus,
     });
 
