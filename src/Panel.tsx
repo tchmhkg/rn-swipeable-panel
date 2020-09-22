@@ -8,7 +8,8 @@ import {
   Animated,
   Dimensions,
   PanResponder,
-  Keyboard
+  Keyboard,
+  Platform
 } from 'react-native';
 
 import { Bar } from './Bar';
@@ -129,7 +130,7 @@ class SwipeablePanel extends React.Component<SwipeablePanelProps, SwipeablePanel
 
     Dimensions.addEventListener('change', this._onOrientationChange);
 
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._animateTo(STATUS.LARGE));
+    this.keyboardDidShowListener = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', () => this._animateTo(STATUS.LARGE));
 
   };
 
